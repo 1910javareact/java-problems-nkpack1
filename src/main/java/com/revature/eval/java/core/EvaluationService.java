@@ -1,21 +1,51 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class EvaluationService {
-
-	/**
-	 * 1. Without using the StringBuilder or StringBuffer class, write a method that
+	
+ protected String phrase;
+ protected String acronym ="";
+private String number;
+	/**  Without using the StringBuilder or StringBuffer class, write a method that
 	 * reverses a String. Example: reverse("example"); -> "elpmaxe"
 	 * 
 	 * @param string
 	 * @return
-	 */
-	public String reverse(String string) {
+	 **/
+	
+	public String reverse(String string ) 
+	{
+		String reverse = "";
 		
-		return "";
+		for(char c : string.toCharArray())
+		{
+			reverse = c + reverse;
+			System.out.println(reverse);
+		}
+		
+		return reverse;
+			
+	}
+	
+	
+	public String acronym() {
+		
+		acronym += phrase.toUpperCase().charAt(0);
+		for(int i = 1; i <=phrase.length() -1; i++)
+		{
+			if(phrase.charAt(i-1) == ' ' || phrase.charAt(i-1) == '-') {
+				acronym +=phrase.toUpperCase().charAt(i);
+				System.out.println(acronym);
+			}
+			
+		}
+		return acronym; 
+		
 	}
 
 	/**
@@ -27,8 +57,8 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		
+		return this.phrase = phrase;
 	}
 
 	/**
@@ -114,7 +144,64 @@ public class EvaluationService {
 	 */
 	public int getScrabbleScore(String string) {
 		// TODO Write an implementation for this method declaration
-		return 0;
+		Map<Character, Integer> lettersMap = new HashMap<>();
+        String lettersCap = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < lettersCap.length(); i++) {
+            if (lettersCap.charAt(i) == 'A' || lettersCap.charAt(i) == 'E' ||
+                    lettersCap.charAt(i) == 'I' || lettersCap.charAt(i) == 'O' ||
+                    lettersCap.charAt(i) == 'O' || lettersCap.charAt(i) == 'U' ||
+                    lettersCap.charAt(i) == 'L' || lettersCap.charAt(i) == 'N' ||
+                    lettersCap.charAt(i) == 'R' || lettersCap.charAt(i) == 'S' ||
+                    lettersCap.charAt(i) == 'T') {
+
+                lettersMap.put(lettersCap.charAt(i), 1);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 1);
+            }
+
+            if (lettersCap.charAt(i) == 'D' || lettersCap.charAt(i) == 'G') {
+                lettersMap.put(lettersCap.charAt(i), 2);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 2);
+            }
+
+            if (lettersCap.charAt(i) == 'B' || lettersCap.charAt(i) == 'C' ||
+                    lettersCap.charAt(i) == 'M' || lettersCap.charAt(i) == 'P') {
+                lettersMap.put(lettersCap.charAt(i), 3);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 3);
+            }
+
+            if (lettersCap.charAt(i) == 'F' || lettersCap.charAt(i) == 'H' ||
+                    lettersCap.charAt(i) == 'V' || lettersCap.charAt(i) == 'W' ||
+                    lettersCap.charAt(i) == 'Y') {
+                lettersMap.put(lettersCap.charAt(i), 4);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 4);
+            }
+
+            if (lettersCap.charAt(i) == 'K') {
+                lettersMap.put(lettersCap.charAt(i), 5);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 5);
+            }
+
+            if (lettersCap.charAt(i) == 'J' || lettersCap.charAt(i) == 'X') {
+                lettersMap.put(lettersCap.charAt(i), 8);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 8);
+            }
+
+            if (lettersCap.charAt(i) == 'Q' || lettersCap.charAt(i) == 'Z') {
+                lettersMap.put(lettersCap.charAt(i), 10);
+                lettersMap.put(lettersCap.toLowerCase().charAt(i), 10);
+            }
+
+        }
+
+        int totalValue = 0;
+
+        for (int j = 0; j < string.length(); j++) {
+
+            totalValue += lettersMap.get(string.charAt(j));
+        }
+
+		return totalValue;
 	}
 
 	/**
@@ -149,10 +236,68 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
-	}
+		
+		 return number = normalize(extractDigits(string));
+    }
 
+    private String extractDigits(String Number) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char c :Number.toCharArray()) {
+            if (c == ' ' || c == '.' || c == '(' || c == ')' || c == '-' || c == '+') {
+                // Remove spaces, dots, parentheses, hyphens and pluses
+                continue;
+            }
+            if ("-@:!".indexOf(c) > -1) {
+                throw new IllegalArgumentException("punctuations not permitted");
+            }
+            if (!Character.isDigit(c)) {
+                throw new IllegalArgumentException("letters not permitted");
+            }
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
+    }
+
+    private String normalize(String number) {
+        if (number.length() < 10) {
+            throw new IllegalArgumentException("incorrect number of digits");
+        }
+
+        if (number.length() > 11) {
+            throw new IllegalArgumentException("more than 11 digits");
+        }
+        
+        if (number.length() == 11) {
+            if (number.startsWith("1")) {
+                number = number.substring(1, number.length());
+            } else {
+                throw new IllegalArgumentException("11 digits must start with 1");
+            }
+        }
+  
+        if (number.startsWith("0")) {
+            throw new IllegalArgumentException("area code cannot start with zero");
+        }
+        
+        if (number.startsWith("1")) {
+            throw new IllegalArgumentException("area code cannot start with one");
+        }
+        
+        if (number.charAt(3) == '0') {
+            throw new IllegalArgumentException("exchange code cannot start with zero");
+        }
+        
+        if (number.charAt(3) == '1') {
+            throw new IllegalArgumentException("exchange code cannot start with one");
+        }
+
+        return number;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+	
 	/**
 	 * 6. Given a phrase, count the occurrences of each word in that phrase.
 	 * 
@@ -163,8 +308,22 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		// TODO Write an implementation 
+		Map<String, Integer> count = new HashMap<>();
+      
+      for (char c : string.toCharArray()) {
+          if ((int) c > 96 || (int) c == 32) {
+              string+= String.valueOf(c);
+          }
+     }
+      String[] ar = string.toLowerCase().replaceAll("\\p{Punct}", "").replaceAll("( )+", " ").split(" ");
+      for (String str : ar) {
+          if (count.containsKey(str)) {
+              count.computeIfPresent(str, (k, v) -> v + 1);
+          } else count.put(str, 1);
+      }
+      return count;
+ 
 	}
 
 	/**
@@ -244,8 +403,31 @@ public class EvaluationService {
 	 */
 	public String toPigLatin(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		// the index of the first vowel is stored
+		int len = string.length();
+		int index = -1;
+		for(int i = 0; i < len; i++) {
+			if(isVowel(string.charAt(i))){
+				index = i;
+				break;
+			}
+		}
+		//pig latin vowel is present
+		if(index == -1)
+		return "-1";
+		
+		//append all characters in index 
+		// append "ay"
+		return string.substring(index) + string.substring(0, index) + "ay";
 	}
+
+
+
+	private boolean isVowel(char charAt) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 	/**
 	 * 9. An Armstrong number is a number that is the sum of its own digits each
@@ -264,8 +446,26 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 		// TODO Write an implementation for this method declaration
-		return false;
+		
+				int sum = 0;
+				int copyOfNum = input;
+				int lenOfNum = 0;
+
+				while (input > 0) {
+					lenOfNum++;
+					input /= 10;			
+				}
+
+				input = copyOfNum;
+				
+				while (input > 0) {
+					sum += Math.pow(input%10, lenOfNum);
+					input /= 10;
+				}
+
+				return sum == copyOfNum;
 	}
+	
 
 	/**
 	 * 10. Compute the prime factors of a given natural number.
@@ -308,21 +508,22 @@ public class EvaluationService {
 	 * gur ynml qbt. ROT13 Gur dhvpx oebja sbk whzcf bire gur ynml qbt. gives The
 	 * quick brown fox jumps over the lazy dog.
 	 */
-	static class RotationalCipher {
-		private int key;
+	final class RotationalCipher {
+		
 
 		public RotationalCipher(int key) {
 			super();
-			this.key = key;
-		}
+			
+		  }
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
-		}
-
+		
+		
+			 return null;
+	
 	}
-
+}
+		
 	/**
 	 * 12. Given a number n, determine what the nth prime is.
 	 * 
@@ -364,7 +565,7 @@ public class EvaluationService {
 	 * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
 	 *
 	 */
-	static class AtbashCipher {
+	class AtbashCipher {
 
 		/**
 		 * Question 13
@@ -372,9 +573,15 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String encode(String string) {
+		public String encode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			String cipherText = "";
+	        for(Character c: string.toLowerCase().toCharArray()) {
+	            if(cipherText.length() % 6 == 5)
+	                cipherText += " ";
+	            cipherText += cipher(c);
+	        }
+	        return cipherText.trim();
 		}
 
 		/**
@@ -383,10 +590,23 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String decode(String string) {
+		public  String decode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			String clearText = "";
+	        for(Character c: string.toLowerCase().toCharArray())
+	            clearText += cipher(c);
+	        return clearText;
+			
 		}
+		 private  String cipher(Character c) {
+		        if('0' <= c && c <= '9')
+		            return String.valueOf(c);
+		        else if ('a' <= c && c <= 'z')
+		            return String.valueOf((char) (219 - (int) c));
+		        else
+		            return "";
+		    }
+		
 	}
 
 	/**
@@ -504,7 +724,8 @@ public class EvaluationService {
 	public boolean isLuhnValid(String string) {
 		// TODO Write an implementation for this method declaration
 		return false;
-	}
+    }
+		
 
 	/**
 	 * 20. Parse and evaluate simple math word problems returning the answer as an
@@ -534,8 +755,20 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
+	
+		
 		return 0;
+	
 	}
-
 }
+	
+	
+	
+       
+	
+	
+	
+	
+
+
+	
